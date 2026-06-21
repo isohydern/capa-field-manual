@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The CAPA Cycle — A Field Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE6D6;
+    --paper-deep:#E2D9C3;
+    --card:#F6F2E8;
+    --ink:#1B2A38;
+    --ink-soft:#3E4F5C;
+    --brass:#A8842C;
+    --brick:#A8402F;
+    --sage:#4F6B4F;
+    --steel:#5B7282;
+    --line: rgba(27,42,56,0.14);
+    --line-strong: rgba(27,42,56,0.28);
+    --shadow: 0 10px 28px rgba(27,42,56,0.10);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Sans 3', sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(rgba(27,42,56,0.035) 1px, transparent 1px);
+    background-size: 4px 4px;
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px; position:relative; z-index:1;}
+  h1,h2,h3,h4{font-family:'Fraunces', serif; color:var(--ink); margin:0 0 .4em 0; font-weight:600;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  a{color:inherit;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-size:.72rem;
+    color:var(--brass);
+    font-weight:600;
+  }
+  p{margin:.4em 0 .8em 0;}
+  ul{margin:.3em 0; padding-left:1.15em;}
+  li{margin:.28em 0;}
+
+  /* ---------- DOC CONTROL STRIP ---------- */
+  .docbar{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.7rem;
+    letter-spacing:.04em;
+    padding:8px 0;
+  }
+  .docbar .wrap{display:flex; flex-wrap:wrap; gap:6px 22px; justify-content:space-between;}
+  .docbar span{opacity:.88;}
+  .docbar b{color:var(--brass); font-weight:600;}
+
+  /* ---------- COVER ---------- */
+  .cover{padding:64px 0 40px 0; border-bottom:1px solid var(--line-strong);}
+  .cover h1{
+    font-size:clamp(2.1rem, 4.6vw, 3.4rem);
+    line-height:1.06;
+    max-width:14ch;
+    margin-top:.5em;
+  }
+  .cover .lede{
+    max-width:58ch;
+    font-size:1.08rem;
+    color:var(--ink-soft);
+    margin-top:1em;
+  }
+  .cover .stamp-row{
+    display:flex; gap:14px; flex-wrap:wrap; margin-top:28px;
+  }
+  .stamp{
+    border:1.5px solid var(--ink); border-radius:3px;
+    padding:8px 14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.74rem;
+    letter-spacing:.04em;
+    transform:rotate(-1.2deg);
+    background:var(--card);
+  }
+  .stamp b{display:block; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); margin-bottom:2px;}
+
+  /* ---------- NAV ---------- */
+  nav.toc{
+    position:sticky; top:0; z-index:5;
+    background:rgba(237,230,214,0.96);
+    backdrop-filter:saturate(140%) blur(6px);
+    border-bottom:1px solid var(--line-strong);
+  }
+  nav.toc .wrap{
+    display:flex; gap:4px; overflow-x:auto;
+    padding:10px 28px;
+    scrollbar-width:thin;
+  }
+  nav.toc a{
+    flex:0 0 auto;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.72rem;
+    letter-spacing:.03em;
+    text-decoration:none;
+    color:var(--ink-soft);
+    padding:7px 12px;
+    border-radius:20px;
+    white-space:nowrap;
+    border:1px solid transparent;
+  }
+  nav.toc a:hover{border-color:var(--line-strong); color:var(--ink);}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:62px 0;}
+  section + section{border-top:1px solid var(--line);}
+  .sec-head{margin-bottom:30px; max-width:62ch;}
+  .sec-head .eyebrow{display:block; margin-bottom:.5em;}
+  .sec-head h2{font-size:clamp(1.5rem,3vw,2.1rem);}
+  .sec-head p{color:var(--ink-soft); font-size:1.02rem;}
+
+  /* ---------- QUOTE / REG BASIS ---------- */
+  .quote-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px;}
+  .quote-card{
+    background:var(--card); border:1px solid var(--line); border-left:4px solid var(--brass);
+    padding:18px 20px; border-radius:2px; box-shadow:var(--shadow);
+  }
+  .quote-card .src{font-family:'IBM Plex Mono',monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--brass); margin-bottom:8px; font-weight:600;}
+  .quote-card p{font-style:italic; color:var(--ink-soft); margin:0; font-size:.95rem;}
+
+  /* ---------- WITHOUT / WITH ---------- */
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:26px;}
+  @media(max-width:680px){.split{grid-template-columns:1fr;}}
+  .split-col{border-radius:3px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow);}
+  .split-col header{padding:12px 18px; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.78rem; letter-spacing:.05em; text-transform:uppercase;}
+  .split-col.bad header{background:var(--brick); color:#fff;}
+  .split-col.good header{background:var(--sage); color:#fff;}
+  .split-col ul{background:var(--card); margin:0; padding:16px 18px 16px 34px; font-size:.93rem;}
+
+  /* cost cascade */
+  .cascade{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:26px;}
+  .cascade .item{background:var(--card); border:1px solid var(--line); border-radius:3px; padding:16px 18px; position:relative; padding-left:54px; box-shadow:var(--shadow);}
+  .cascade .item .num{
+    position:absolute; left:14px; top:16px;
+    width:28px; height:28px; border-radius:50%;
+    background:var(--ink); color:var(--paper);
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.82rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cascade .item h4{font-size:.98rem; margin-bottom:.25em; font-family:'Source Sans 3'; font-weight:700; color:var(--brick);}
+  .cascade .item p{font-size:.88rem; color:var(--ink-soft); margin:0;}
+
+  /* ---------- CYCLE (signature) ---------- */
+  .cycle-zone{padding-top:10px;}
+  .cycle{
+    position:relative; width:600px; height:600px; margin:50px auto 30px auto;
+  }
+  .cycle__track{position:absolute; inset:0; border:2px dashed var(--steel); border-radius:50%; opacity:.45;}
+  .cycle__hub{
+    position:absolute; top:50%; left:50%; width:172px; height:172px; margin:-86px 0 0 -86px;
+    border-radius:50%; background:var(--ink); color:var(--paper);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    box-shadow:0 0 0 7px var(--paper), 0 0 0 9px var(--ink), var(--shadow);
+  }
+  .cycle__hub .mono{font-size:.62rem; letter-spacing:.12em; color:var(--brass); margin-bottom:4px;}
+  .cycle__hub strong{font-family:'Fraunces',serif; font-size:1.5rem; line-height:1.05;}
+  .cycle__hub span.sub{font-size:.66rem; color:#C9CFD4; margin-top:6px; max-width:120px;}
+
+  .cycle__node{position:absolute; top:50%; left:50%; width:0; height:0;}
+  .cycle__node-inner{
+    position:absolute; transform:translate(-50%,-50%);
+    width:158px; text-align:center;
+  }
+  .node-badge{
+    width:40px; height:40px; border-radius:50%;
+    background:var(--card); border:2px solid var(--ink); color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.95rem;
+    margin:0 auto 6px auto; box-shadow:var(--shadow);
+  }
+  .node-title{font-family:'Source Sans 3'; font-weight:700; font-size:.86rem; color:var(--ink);}
+
+  .cycle__outcomes{
+    max-width:300px; margin:18px auto 0 auto;
+    background:var(--card); border:1px solid var(--line); border-radius:4px;
+    padding:14px 16px; box-shadow:var(--shadow);
+  }
+  .cycle__outcomes .ttl{font-family:'IBM Plex Mono',monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--steel); margin-bottom:8px;}
+  .outc{display:flex; align-items:flex-start; gap:8px; font-size:.82rem; margin:6px 0;}
+  .outc .dot{width:9px; height:9px; border-radius:50%; margin-top:5px; flex:0 0 auto;}
+  .outc.eff .dot{background:var(--sage);}
+  .outc.par .dot{background:var(--brass);}
+  .outc.ineff .dot{background:var(--brick);}
+
+  .cycle-fallback{display:none;}
+  @media(max-width:760px){
+    .cycle{display:none;}
+    .cycle-fallback{
+      display:flex; flex-direction:column; gap:10px; margin:30px auto;
+      max-width:480px;
+    }
+    .cf-step{display:flex; gap:14px; align-items:flex-start; background:var(--card); border:1px solid var(--line); border-radius:3px; padding:12px 16px; box-shadow:var(--shadow);}
+    .cf-step .node-badge{margin:0;}
+    .cf-step .arrow{text-align:center; color:var(--steel); font-family:'IBM Plex Mono';}
+  }
+
+  /* ---------- TRIGGERS ---------- */
+  .trig-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-top:26px;}
+  .trig{background:var(--card); border:1px solid var(--line); border-radius:3px; padding:16px 18px; box-shadow:var(--shadow);}
+  .trig h4{font-size:.95rem; color:var(--brass); display:flex; align-items:center; gap:8px; margin-bottom:.3em;}
+  .trig h4 .glyph{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+  .trig p{font-size:.86rem; color:var(--ink-soft); margin:0;}
+
+  /* ---------- STEP CARDS ---------- */
+  .step-card{
+    display:grid; grid-template-columns:64px 1fr; gap:0 22px;
+    margin-bottom:26px; position:relative;
+  }
+  .step-card .rail{display:flex; flex-direction:column; align-items:center;}
+  .step-card .rail .badge{
+    width:48px; height:48px; border-radius:50%; background:var(--ink); color:var(--paper);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:1.05rem;
+    box-shadow:var(--shadow); flex:0 0 auto;
+  }
+  .step-card .rail .stem{flex:1; width:2px; background:var(--line-strong); margin-top:6px;}
+  .step-card:last-child .rail .stem{display:none;}
+  .step-card .body{
+    background:var(--card); border:1px solid var(--line); border-radius:4px; box-shadow:var(--shadow);
+    padding:22px 24px; margin-bottom:6px;
+  }
+  .step-card h3{font-size:1.18rem; margin-bottom:.15em;}
+  .step-card .tagline{font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.05em; color:var(--steel); text-transform:uppercase; margin-bottom:14px;}
+  .step-grid2{display:grid; grid-template-columns:1.1fr .9fr; gap:22px; margin-top:14px;}
+  @media(max-width:700px){.step-grid2{grid-template-columns:1fr;}}
+  .step-grid2 h5{font-family:'IBM Plex Mono',monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--brass); margin:0 0 .5em 0;}
+  .mistake-box{background:rgba(168,64,47,0.07); border:1px solid rgba(168,64,47,0.3); border-radius:3px; padding:12px 14px; margin-top:14px;}
+  .mistake-box h5{color:var(--brick);}
+  .mistake-box ul{font-size:.85rem; margin:0; padding-left:1.1em;}
+  .worked{background:rgba(79,107,79,0.07); border:1px solid rgba(79,107,79,0.3); border-radius:3px; padding:12px 14px; font-size:.86rem;}
+  .worked h5{color:var(--sage);}
+  .worked .code{font-family:'IBM Plex Mono',monospace; font-size:.78rem; background:rgba(27,42,56,0.06); padding:1px 5px; border-radius:2px;}
+
+  /* ---------- RCA TOOLKIT ---------- */
+  .rca-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:26px;}
+  @media(max-width:820px){.rca-grid{grid-template-columns:1fr;}}
+  .rca-card{background:var(--card); border:1px solid var(--line); border-radius:4px; box-shadow:var(--shadow); overflow:hidden;}
+  .rca-card header{background:var(--ink); color:var(--paper); padding:14px 18px;}
+  .rca-card header .eyebrow{color:var(--brass);}
+  .rca-card header h4{color:var(--paper); margin:.2em 0 0 0; font-size:1.1rem;}
+  .rca-card .content{padding:16px 18px; font-size:.88rem; color:var(--ink-soft);}
+  .rca-card .content b{color:var(--ink);}
+
+  .why-chain{display:flex; flex-direction:column; gap:8px; margin-top:18px;}
+  .why-row{display:grid; grid-template-columns:90px 1fr; gap:14px; align-items:start;}
+  .why-row .lbl{font-family:'IBM Plex Mono',monospace; font-size:.72rem; font-weight:600; padding:6px 0;}
+  .why-row .lbl.problem{color:var(--brick);}
+  .why-row .lbl.root{color:var(--sage);}
+  .why-row .txt{background:var(--card); border:1px solid var(--line); border-radius:3px; padding:10px 14px; font-size:.86rem;}
+  .why-row .txt.root{border-color:var(--sage); border-width:1.5px; background:rgba(79,107,79,0.08); font-weight:600;}
+
+  .fish-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:18px;}
+  @media(max-width:700px){.fish-grid{grid-template-columns:1fr 1fr;}}
+  .fish-m{background:var(--card); border:1px solid var(--line); border-radius:3px; padding:10px 12px;}
+  .fish-m header{font-family:'IBM Plex Mono',monospace; font-size:.74rem; font-weight:600; margin-bottom:4px;}
+  .fish-m.root{border-color:var(--sage); border-width:1.5px; background:rgba(79,107,79,0.08);}
+  .fish-m.root header{color:var(--sage);}
+  .fish-m.contrib{border-color:var(--brass); border-width:1.5px; background:rgba(168,132,44,0.08);}
+  .fish-m.contrib header{color:var(--brass);}
+  .fish-m p{font-size:.78rem; margin:0; color:var(--ink-soft);}
+
+  /* ---------- AUDITOR NOTE ---------- */
+  .auditor-note{
+    background:var(--ink); color:var(--paper);
+    border-radius:4px; padding:18px 22px; margin:22px 0; box-shadow:var(--shadow);
+    position:relative;
+  }
+  .auditor-note .eyebrow{color:var(--brass); display:flex; align-items:center; gap:8px;}
+  .auditor-note p, .auditor-note li{color:#D9D2C0; font-size:.92rem;}
+  .auditor-note ul{margin-top:8px;}
+  .auditor-note b{color:#fff;}
+
+  /* ---------- TABLES ---------- */
+  table{width:100%; border-collapse:collapse; margin-top:22px; background:var(--card); box-shadow:var(--shadow); border-radius:4px; overflow:hidden;}
+  thead th{background:var(--ink); color:var(--paper); font-family:'IBM Plex Mono',monospace; font-size:.74rem; text-transform:uppercase; letter-spacing:.05em; text-align:left; padding:10px 14px; font-weight:600;}
+  tbody td{padding:12px 14px; border-top:1px solid var(--line); font-size:.86rem; vertical-align:top;}
+  tbody tr:nth-child(odd){background:rgba(27,42,56,0.025);}
+  tbody td:first-child{font-weight:700; color:var(--ink); white-space:nowrap;}
+
+  /* ---------- CHECKLIST ---------- */
+  .check-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px;}
+  @media(max-width:680px){.check-grid{grid-template-columns:1fr;}}
+  .check-item{display:flex; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:3px; padding:13px 16px; box-shadow:var(--shadow);}
+  .check-item .box{width:18px; height:18px; border:2px solid var(--ink); border-radius:3px; flex:0 0 auto; margin-top:2px;}
+  .check-item .tag{font-family:'IBM Plex Mono',monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; color:var(--brass); display:block; margin-bottom:2px;}
+  .check-item p{margin:0; font-size:.87rem;}
+
+  /* ---------- WEAK/STRONG ---------- */
+  .ws-grid{display:grid; gap:8px; margin-top:18px;}
+  .ws-row{display:flex; gap:10px; align-items:flex-start; font-size:.9rem;}
+  .ws-row .mk{font-weight:700; width:18px; flex:0 0 auto;}
+  .ws-row.bad .mk{color:var(--brick);}
+  .ws-row.good .mk{color:var(--sage);}
+  .ws-row .note{color:var(--ink-soft); font-size:.82rem; margin-left:28px; display:block;}
+
+  /* ---------- TAKEAWAYS ---------- */
+  .tk-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:26px;}
+  .tk-card{background:var(--ink); color:var(--paper); border-radius:4px; padding:18px 20px; box-shadow:var(--shadow);}
+  .tk-card .num{font-family:'Fraunces',serif; font-size:1.8rem; color:var(--brass); line-height:1;}
+  .tk-card h4{color:#fff; font-size:1rem; margin:.3em 0 .3em 0;}
+  .tk-card p{color:#C9CFD4; font-size:.84rem; margin:0;}
+
+  .commit-list{display:flex; flex-direction:column; gap:10px; margin-top:24px;}
+  .commit{background:var(--card); border-left:4px solid var(--sage); border:1px solid var(--line); border-radius:3px; padding:14px 18px; box-shadow:var(--shadow);}
+  .commit .ttl{font-family:'Fraunces',serif; font-style:italic; font-weight:500; margin-bottom:6px;}
+  .commit ul{font-size:.87rem; margin:0;}
+
+  footer{padding:34px 0 60px 0; text-align:center;}
+  footer p{font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--steel); letter-spacing:.03em;}
+
+  @media print{
+    nav.toc{position:static;}
+    .docbar{background:#1B2A38 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+
+<div class="docbar">
+  <div class="wrap">
+    <span><b>DOC REF</b> CAPA-EDU-001</span>
+    <span><b>PREPARED FOR</b> Ops &amp; QA — Ahmad Faisal Zulkifli</span>
+    <span><b>SCOPE</b> Malaysian GMP / Cosmetic &amp; Pharma OEM</span>
+    <span><b>REV</b> 1.0 · 21 Jun 2026</span>
+  </div>
+</div>
+
+<header class="cover">
+  <div class="wrap">
+    <span class="eyebrow">Auditor's Field Manual — CAPA Management</span>
+    <h1>If it isn't documented, it didn't happen.</h1>
+    <p class="lede">A working reference for closing CAPAs that actually survive the next inspection — built around the CAPA Cycle, the seven steps every finding must travel from identification to verified, evidence-backed closure.</p>
+    <div class="stamp-row">
+      <div class="stamp"><b>Status</b>For Reference &amp; Training</div>
+      <div class="stamp"><b>Applies to</b>NPRA · TMHS · Client Audits</div>
+      <div class="stamp"><b>Core rule</b>Systemic, not personal</div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#why">Why It Matters</a>
+    <a href="#cycle">The CAPA Cycle</a>
+    <a href="#triggers">Triggers</a>
+    <a href="#steps">7 Steps in Detail</a>
+    <a href="#rca">RCA Toolkit</a>
+    <a href="#auditor">Auditor's Lens</a>
+    <a href="#writing">Writing the CAPA</a>
+    <a href="#evidence">Evidence Standards</a>
+    <a href="#closure">Closure Checklist</a>
+    <a href="#takeaways">Key Takeaways</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- WHY IT MATTERS -->
+  <section id="why">
+    <div class="sec-head">
+      <span class="eyebrow">Introduction</span>
+      <h2>CAPA is not paperwork. It's a regulatory commitment.</h2>
+      <p>Every Malaysian GMP and pharmaceutical framework treats CAPA as a non-negotiable element of the quality management system — not a box to tick after a finding.</p>
+    </div>
+
+    <div class="quote-grid">
+      <div class="quote-card">
+        <div class="src">NPRA — CAPA System Guidance, 2016</div>
+        <p>The CAPA system is one of the most important elements of a quality management system, applied to determine root cause across complaints, rejections, non-conformances, recalls, deviations, audits and process trends.</p>
+      </div>
+      <div class="quote-card">
+        <div class="src">NPRA-DRGD Appendix 34 — Product Quality Reporting</div>
+        <p>NPRA oversees investigations into product quality defects in the Malaysian market and expects companies to monitor CAPA effectiveness through regular trend analysis.</p>
+      </div>
+      <div class="quote-card">
+        <div class="src">TMHS GMP Guidelines — Self-Inspection 9.1</div>
+        <p>Self-inspections must monitor GMP compliance, identify areas for improvement, and propose corrective measures as a continuous discipline.</p>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="split-col bad">
+        <header>Without effective CAPA</header>
+        <ul>
+          <li>Repeat failures and the same complaints recur</li>
+          <li>Persistent audit findings and non-conformances</li>
+          <li>Risk of product recall or market withdrawal</li>
+          <li>Loss of customer and regulatory trust</li>
+          <li>Resources wasted resolving the same issue twice</li>
+        </ul>
+      </div>
+      <div class="split-col good">
+        <header>With effective CAPA</header>
+        <ul>
+          <li>Fewer repeat problems — quality improves over time</li>
+          <li>Confident, evidence-backed audit responses</li>
+          <li>Safer, more consistent products for consumers</li>
+          <li>A stronger quality culture across the organisation</li>
+          <li>Measurable improvement in operational productivity</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin-top:40px; font-size:1.2rem;">The cascade when a CAPA fails</h3>
+    <p style="color:var(--ink-soft); max-width:60ch;">A weak CAPA rarely stays contained to one finding — it tends to compound.</p>
+    <div class="cascade">
+      <div class="item"><span class="num">1</span><h4>Escalated regulatory action</h4><p>A rejected CAPA response can trigger an NPRA Warning Letter, a downgraded GMP certificate, or a costly follow-up inspection.</p></div>
+      <div class="item"><span class="num">2</span><h4>Findings become "systemic"</h4><p>A recurrence at the next audit gets reclassified as a quality-system failure — a far more serious category than the original finding.</p></div>
+      <div class="item"><span class="num">3</span><h4>Recall or market action</h4><p>If the root cause wasn't genuinely eliminated, recurrence on released product can trigger a recall or field alert.</p></div>
+      <div class="item"><span class="num">4</span><h4>Lost client relationships</h4><p>For OEM contract manufacturers, a weak CAPA response to a client audit can mean losing the contract outright — clients audit suppliers specifically to test CAPA maturity.</p></div>
+      <div class="item"><span class="num">5</span><h4>Certificate suspension</h4><p>In severe or repeated cases, NPRA can suspend or revoke a manufacturing licence, halting production until remediation is verified.</p></div>
+      <div class="item"><span class="num">6</span><h4>Erosion of quality culture</h4><p>When CAPAs are written to "close the file," staff learn documentation is a formality — and real risks go unaddressed.</p></div>
+    </div>
+  </section>
+
+  <!-- THE CYCLE -->
+  <section id="cycle" class="cycle-zone">
+    <div class="sec-head">
+      <span class="eyebrow">Module 1 · The Mind Map</span>
+      <h2>The CAPA Cycle — seven steps, three possible endings</h2>
+      <p>CAPA isn't a straight line that ends at "submitted." It's a loop: a finding only earns closure once verification proves the root cause is genuinely gone — and if it isn't, the cycle reopens.</p>
+    </div>
+
+    <div class="cycle">
+      <div class="cycle__track"></div>
+      <div class="cycle__hub">
+        <span class="mono">7 STEPS</span>
+        <strong>CAPA</strong>
+        <span class="sub">Corrective &amp; Preventive Action Cycle</span>
+      </div>
+
+      <div class="cycle__node" style="transform:rotate(-90deg) translate(240px) rotate(90deg);">
+        <div class="cycle__node-inner"><div class="node-badge">01</div><div class="node-title">Identification</div></div>
+      </div>
+      <div class="cycle__node" style="transform:rotate(-38.6deg) translate(240px) rotate(38.6deg);">
+        <div class="cycle__node-inner"><div class="node-badge">02</div><div class="node-title">Evaluation</div></div>
+      </div>
+      <div class="cycle__node" style="transform:rotate(12.9deg) translate(240px) rotate(-12.9deg);">
+        <div class="cycle__node-inner"><div class="node-badge">03</div><div class="node-title">Investigation</div></div>
+      </div>
+      <div class="cycle__node" style="transform:rotate(64.3deg) translate(240px) rotate(-64.3deg);">
+        <div class="cycle__node-inner"><div class="node-badge">04</div><div class="node-title">Root Cause Analysis</div></div>
+      </div>
+      <div class="cycle__node" style="transform:rotate(115.7deg) translate(240px) rotate(-115.7deg);">
+        <div class="cycle__node-inner"><div class="node-badge">05</div><div class="node-title">Action Plan</div></div>
+      </div>
+      <div class="cycle__node" style="transform:rotate(167.1deg) translate(240px) rotate(-167.1deg);">
+        <div class="cycle__node-inner"><div class="node-badge">06</div><div class="node-title">Implementation</div></div>
+      </div>
+      <div class="cycle__node" style="transform:rotate(218.6deg) translate(240px) rotate(-218.6deg);">
+        <div class="cycle__node-inner"><div class="node-badge">07</div><div class="node-title">Verification</div></div>
+      </div>
+    </div>
+
+    <div class="cycle__outcomes">
+      <div class="ttl">Step 7 has three possible verdicts</div>
+      <div class="outc eff"><span class="dot"></span><span><b>Effective</b> — root cause eliminated, no recurrence. CAPA formally closed.</span></div>
+      <div class="outc par"><span class="dot"></span><span><b>Partial</b> — improvement seen but gap remains. Loops back to <b>Step 5, Action Plan</b> with revised actions.</span></div>
+      <div class="outc ineff"><span class="dot"></span><span><b>Ineffective</b> — problem recurred. Loops back to <b>Step 3, Investigation</b> and reopens.</span></div>
+    </div>
+
+    <!-- mobile fallback -->
+    <div class="cycle-fallback">
+      <div class="cf-step"><div class="node-badge">01</div><div><b>Identification</b><br><span style="font-size:.85rem;color:var(--ink-soft)">Log the finding in the quality system</span></div></div>
+      <div class="arrow">↓</div>
+      <div class="cf-step"><div class="node-badge">02</div><div><b>Evaluation</b><br><span style="font-size:.85rem;color:var(--ink-soft)">Assess risk, scope, compliance impact</span></div></div>
+      <div class="arrow">↓</div>
+      <div class="cf-step"><div class="node-badge">03</div><div><b>Investigation</b><br><span style="font-size:.85rem;color:var(--ink-soft)">Gather objective evidence</span></div></div>
+      <div class="arrow">↓</div>
+      <div class="cf-step"><div class="node-badge">04</div><div><b>Root Cause Analysis</b><br><span style="font-size:.85rem;color:var(--ink-soft)">Determine the systemic cause</span></div></div>
+      <div class="arrow">↓</div>
+      <div class="cf-step"><div class="node-badge">05</div><div><b>Action Plan</b><br><span style="font-size:.85rem;color:var(--ink-soft)">Define time-bound corrective actions</span></div></div>
+      <div class="arrow">↓</div>
+      <div class="cf-step"><div class="node-badge">06</div><div><b>Implementation</b><br><span style="font-size:.85rem;color:var(--ink-soft)">Execute with documented evidence</span></div></div>
+      <div class="arrow">↓</div>
+      <div class="cf-step"><div class="node-badge">07</div><div><b>Verification</b><br><span style="font-size:.85rem;color:var(--ink-soft)">Confirm effectiveness, formally close</span></div></div>
+    </div>
+
+    <div class="auditor-note">
+      <span class="eyebrow">🎓 Auditor's note — beyond the source</span>
+      <p><b>Correction vs. Corrective Action vs. Preventive Action</b> — the three terms get blurred constantly, and auditors notice. A <b>correction</b> fixes the immediate symptom (re-sign the missing BMR field). A <b>corrective action</b> fixes the root cause so the same gap can't recur (revise SOP-QA-012, add an escalation path). A <b>preventive action</b> looks sideways and forward — does this same gap exist in other products, lines, or sites before it's ever found there? A CAPA that only contains a correction is not a CAPA; it's an excuse with a reference number.</p>
+    </div>
+  </section>
+
+  <!-- TRIGGERS -->
+  <section id="triggers">
+    <div class="sec-head">
+      <span class="eyebrow">Module 1 · What Starts the Cycle</span>
+      <h2>What triggers a CAPA?</h2>
+      <p>Any quality event that reveals an existing or potential failure in a product, process or system can open a CAPA.</p>
+    </div>
+    <div class="trig-grid">
+      <div class="trig"><h4><span class="glyph">▸</span> Audit Finding</h4><p>NPRA regulatory inspection, internal GMP audit, or client/third-party audit — any classified finding (Critical, Major, Minor).</p></div>
+      <div class="trig"><h4><span class="glyph">▸</span> Deviation</h4><p>Machine breakdown, temperature excursion, missed in-process step, or any unplanned departure from an approved procedure.</p></div>
+      <div class="trig"><h4><span class="glyph">▸</span> Customer Complaint</h4><p>Leaking container, foreign material, substandard performance — any complaint indicating a quality or safety risk.</p></div>
+      <div class="trig"><h4><span class="glyph">▸</span> OOS / OOT Result</h4><p>pH, assay, microbial count, or any test result falling outside specification or alert/action limits.</p></div>
+      <div class="trig"><h4><span class="glyph">▸</span> Supplier Issue</h4><p>Raw material or packaging failing specification, including CoA discrepancies or non-conforming deliveries.</p></div>
+      <div class="trig"><h4><span class="glyph">▸</span> Trend Analysis</h4><p>A pattern of repeated minor deviations or complaints that individually wouldn't trigger a CAPA but collectively signal systemic risk.</p></div>
+    </div>
+
+    <div class="auditor-note">
+      <span class="eyebrow">🎓 Auditor's note — beyond the source</span>
+      <p>With limited QA headcount, not every trigger deserves the same depth of CAPA. Score incoming findings on a simple <b>Risk Priority Number</b> — severity × likelihood × detectability — and let that score set the investigation depth and RCA tool, not your gut feel or how busy the week is. A backlog of open CAPAs sitting past their target date is one of the first things an NPRA or client auditor will pull up; treat <b>CAPA aging</b> as a KPI your QA team reviews monthly, not just the closure count.</p>
+    </div>
+  </section>
+
+  <!-- 7 STEPS DETAIL -->
+  <section id="steps">
+    <div class="sec-head">
+      <span class="eyebrow">Module 1 · CAPA Workflow</span>
+      <h2>The seven steps, in practice</h2>
+      <p>Each step below follows the worked example used throughout this manual: <span class="code mono">CAPA-2026-017</span> — a Major NPRA finding for missing dual sign-off on three batches of ABC Capsules.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="rail"><div class="badge">01</div><div class="stem"></div></div>
+      <div class="body">
+        <h3>Identification</h3>
+        <div class="tagline">What &amp; why</div>
+        <p>Formal recording of an audit finding — from a regulator, internal audit, or client — as a CAPA trigger. Every finding carrying risk to quality, compliance, or patient safety must be logged with a clear, factual description before any other step begins.</p>
+        <div class="step-grid2">
+          <div>
+            <h5>Key activities</h5>
+            <ul>
+              <li>Log the finding in the CAPA and non-conformance register</li>
+              <li>Record the auditor's wording <b>verbatim</b> — never paraphrase</li>
+              <li>Assign a unique CAPA reference linked to the audit report</li>
+              <li>Classify as Critical / Major / Minor / Observation</li>
+              <li>Assign an owner with real authority over the affected process</li>
+              <li>Confirm and calendar the response deadline</li>
+            </ul>
+          </div>
+          <div>
+            <div class="worked">
+              <h5>Worked example</h5>
+              <p>Finding: <i>"Second reviewer sign-off absent for Batches X, Y, Z. BMR 4.3 requires dual sign-off. Classification: MAJOR."</i><br>
+              <span class="code">CAPA-2026-017</span> raised. Owner: QA Manager. Deadline: 30 days from close-out.</p>
+            </div>
+            <div class="mistake-box">
+              <h5>Common mistakes</h5>
+              <ul>
+                <li>Paraphrasing the finding instead of recording exact wording</li>
+                <li>Raising the CAPA days late — delay signals poor quality culture</li>
+                <li>Merging multiple findings into one CAPA reference</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="rail"><div class="badge">02</div><div class="stem"></div></div>
+      <div class="body">
+        <h3>Evaluation</h3>
+        <div class="tagline">Scope the real risk</div>
+        <p>A structured risk assessment of the finding's true scope, its impact on product quality and patient safety, and any regulatory reporting obligation. Confirms whether immediate containment is needed.</p>
+        <div class="step-grid2">
+          <div>
+            <h5>Key questions</h5>
+            <ul>
+              <li>Isolated incident, or a systemic quality gap?</li>
+              <li>How many products, batches or sites are affected?</li>
+              <li>Does it require regulatory notification or a recall assessment?</li>
+              <li>Has any affected product already reached the market?</li>
+            </ul>
+          </div>
+          <div>
+            <div class="worked">
+              <h5>Worked example</h5>
+              <p>BMR review of all Q3 batches found 3 of 30 affected. All 3 already distributed; in-process data showed no OOS results. Patient safety risk: <b>LOW</b>. Recall not warranted — rationale documented. Batch release suspended pending SOP review.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="rail"><div class="badge">03</div><div class="stem"></div></div>
+      <div class="body">
+        <h3>Investigation</h3>
+        <div class="tagline">Gather the facts</div>
+        <p>Objective fact-finding before any conclusion is drawn — BMR review, SOP review, personnel interviews, and training records, not assumptions.</p>
+        <div class="step-grid2">
+          <div>
+            <div class="worked">
+              <h5>Worked example</h5>
+              <p>BMR: Section 4.3 blank in 3 batches only. SOP-QA-012 confirmed two signatures required. Interview: second reviewer was absent with no cover arranged. Training: supervisor's last refresher was 2021; new analyst joined 2023 with no handover.</p>
+            </div>
+          </div>
+          <div>
+            <div class="mistake-box">
+              <h5>Common mistakes</h5>
+              <ul>
+                <li>Limiting review to the finding itself — not checking if it occurred elsewhere or earlier</li>
+                <li>Accepting the first explanation without verifying against records</li>
+                <li>Not reviewing previous audit reports for repeat findings</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="rail"><div class="badge">04</div><div class="stem"></div></div>
+      <div class="body">
+        <h3>Root Cause Analysis</h3>
+        <div class="tagline">Why did the system allow this?</div>
+        <p>RCA asks why the quality system failed to prevent or detect the problem — process gaps, training deficiencies, oversight failures, never personal blame. See the full RCA Toolkit further down this manual.</p>
+        <div class="worked" style="margin-top:14px;">
+          <h5>Worked example — 5-Why chain</h5>
+          <p>Missing sign-off → reviewer absent, no cover → no deputy-reviewer procedure → SOP silent on escalation → SOP not reviewed after 2023 restructure → <b>root cause: no systematic SOP-impact review triggered by organisational change.</b></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="rail"><div class="badge">05</div><div class="stem"></div></div>
+      <div class="body">
+        <h3>Action Plan</h3>
+        <div class="tagline">What will be done, by whom, by when</div>
+        <p>A formal, time-bound plan tracing every action directly back to the confirmed root cause — corrective actions fix the cause; preventive actions check for the same gap elsewhere; horizontal-spread checks confirm nothing else is hiding the same failure.</p>
+        <div class="mistake-box" style="margin-top:14px;">
+          <h5>Common mistakes</h5>
+          <ul>
+            <li>Actions that target the symptom — e.g. "remind staff to sign"</li>
+            <li>All actions given the same unrealistic deadline</li>
+            <li>Training scheduled before the revised SOP is even approved</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="rail"><div class="badge">06</div><div class="stem"></div></div>
+      <div class="body">
+        <h3>Implementation</h3>
+        <div class="tagline">Execute, and prove it</div>
+        <p>Every committed action is carried out and documented with objective evidence. Implementation is not complete until that evidence is filed and retrievable — the auditor will ask for it at the next inspection.</p>
+        <div class="step-grid2">
+          <div>
+            <h5>Evidence expected</h5>
+            <ul>
+              <li>Revised, approved SOP with version number and effective date</li>
+              <li>Signed training attendance register with SOP version trained</li>
+              <li>Change control closure certificate referencing all linked actions</li>
+            </ul>
+          </div>
+          <div>
+            <div class="mistake-box">
+              <h5>Common mistakes</h5>
+              <ul>
+                <li>Marking an action complete with no objective evidence attached</li>
+                <li>Training staff on a draft SOP instead of the approved version</li>
+                <li>Evidence left in personal inboxes instead of the QMS</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="rail"><div class="badge">07</div></div>
+      <div class="body">
+        <h3>Verification &amp; Closure</h3>
+        <div class="tagline">Prove it stayed fixed</div>
+        <p>An objective, evidence-based check — conducted after full implementation, typically 60–90 days minimum — to confirm the root cause stayed eliminated. Only after a positive check can the CAPA be formally closed and the auditor notified.</p>
+        <div class="worked" style="margin-top:14px;">
+          <h5>Worked example — verdict</h5>
+          <p>Criteria: zero missing sign-offs across the next 10 batches; ≥95% monthly spot-check pass rate at 60 and 90 days. Result: all 10 BMRs compliant, both spot-checks passed. <b>VERDICT: EFFECTIVE</b> — CAPA closed, evidence filed in QMS, NPRA notified.</p>
+        </div>
+        <div class="mistake-box" style="margin-top:14px;">
+          <h5>Common mistakes</h5>
+          <ul>
+            <li>Verifying too soon — two weeks is not enough for a systemic finding</li>
+            <li>Closure criteria defined as "no repeat finding" with no measurable threshold</li>
+            <li>Forgetting to notify the regulatory authority of closure when required</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RCA TOOLKIT -->
+  <section id="rca">
+    <div class="sec-head">
+      <span class="eyebrow">Module 2 · Root Cause Analysis</span>
+      <h2>Choosing the right RCA tool</h2>
+      <p>All three tools chase the same target — your choice depends on how complex and how cross-functional the finding is.</p>
+    </div>
+
+    <div class="rca-grid">
+      <div class="rca-card">
+        <header><span class="eyebrow">Tool 1</span><h4>5-Why</h4></header>
+        <div class="content">
+          <p>Ask "why?" repeatedly — usually five times — until you reach a process or system layer the organisation can actually fix.</p>
+          <p><b>Best for:</b> simple, linear findings · Routine/Minor classifications. Fast to complete and document.</p>
+        </div>
+      </div>
+      <div class="rca-card">
+        <header><span class="eyebrow">Tool 2</span><h4>Fishbone (Ishikawa)</h4></header>
+        <div class="content">
+          <p>A diagram shaped like a fish skeleton — the problem sits at the head, six cause categories branch as bones.</p>
+          <p><b>Best for:</b> multi-factor findings, Major classifications, cross-functional RCA workshops.</p>
+        </div>
+      </div>
+      <div class="rca-card">
+        <header><span class="eyebrow">Tool 3</span><h4>6M Analysis</h4></header>
+        <div class="content">
+          <p>A fixed checklist of six categories — Man, Machine, Method, Material, Measurement, Milieu — that drives the brainstorm itself.</p>
+          <p><b>Best for:</b> ensuring no cause category gets skipped. Used <i>inside</i> Fishbone to populate the six bones.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:40px; font-size:1.2rem;">5-Why — the worked chain</h3>
+    <div class="why-chain">
+      <div class="why-row"><span class="lbl problem">PROBLEM</span><div class="txt">Missing dual sign-off in BMR Section 4.3 — Batches X, Y, Z</div></div>
+      <div class="why-row"><span class="lbl">WHY 1</span><div class="txt">Second reviewer was absent — no cover arranged</div></div>
+      <div class="why-row"><span class="lbl">WHY 2</span><div class="txt">No formal procedure for arranging a deputy reviewer during absences</div></div>
+      <div class="why-row"><span class="lbl">WHY 3</span><div class="txt">SOP-QA-012 defines the sign-off requirement but is silent on escalation</div></div>
+      <div class="why-row"><span class="lbl">WHY 4</span><div class="txt">SOP-QA-012 was never reviewed after the 2023 team restructure</div></div>
+      <div class="why-row"><span class="lbl root">ROOT</span><div class="txt root">No systematic SOP review is triggered by organisational change — a change-management control gap</div></div>
+    </div>
+
+    <h3 style="margin-top:40px; font-size:1.2rem;">6M — the same finding, six lenses</h3>
+    <p style="color:var(--ink-soft); max-width:60ch;">6M provides the categories; Fishbone provides the visual structure. Even ruling a category out is a required, documented step.</p>
+    <div class="fish-grid">
+      <div class="fish-m contrib"><header>Man — Contributing</header><p>No deputy arranged; supervisor misread sign-off responsibility; no refresher since 2021.</p></div>
+      <div class="fish-m"><header>Machine — Ruled out</header><p>No equipment involved in the manual sign-off step.</p></div>
+      <div class="fish-m root"><header>Method — Root Cause</header><p>SOP defines dual sign-off but has no escalation path; never updated after restructure.</p></div>
+      <div class="fish-m"><header>Material — Ruled out</header><p>Finding relates to process control, not material inputs.</p></div>
+      <div class="fish-m"><header>Measurement — Ruled out</header><p>Not related to the sign-off issue.</p></div>
+      <div class="fish-m root"><header>Milieu — Root Cause</header><p>2023 restructure changed reviewer roles with no SOP-review trigger — change-control gap.</p></div>
+    </div>
+
+    <div class="auditor-note">
+      <span class="eyebrow">🎓 Auditor's note — beyond the source</span>
+      <p>Internationally, this is the same expectation written into <b>ICH Q10</b> (Pharmaceutical Quality System) and <b>21 CFR 820.100 / ISO 13485</b> for device and combination products — root cause must address the system, and effectiveness must be objectively verified before closure. If Weryx ever supplies a brand owner who reports into FDA or EU frameworks, your CAPA file is the document that gets requested first during their supplier audit — write it to that standard even when the immediate trigger is only an internal NPRA-scope finding.</p>
+    </div>
+  </section>
+
+  <!-- AUDITOR'S LENS -->
+  <section id="auditor">
+    <div class="sec-head">
+      <span class="eyebrow">Inspection Readiness</span>
+      <h2>What auditors actually check</h2>
+      <p>Before writing a CAPA, picture the auditor opening this file twelve months from now with no other context. What do they check first?</p>
+    </div>
+    <table>
+      <thead><tr><th>They ask</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td>Does the problem statement match the original finding, word for word?</td><td>Auditors compare your record against their original inspection notes — any drift raises questions.</td></tr>
+        <tr><td>Is the root cause systemic, or does it blame an individual?</td><td>"Operator error" as a stated root cause is an immediate red flag signalling a shallow investigation.</td></tr>
+        <tr><td>Do the actions logically follow from the root cause?</td><td>Auditors trace backwards from each action to the root cause — if the link isn't obvious, they will ask you to explain it.</td></tr>
+        <tr><td>Is there objective evidence for every completed action?</td><td>A tick in a tracker is not evidence. They expect the actual SOP, training record, or audit report.</td></tr>
+        <tr><td>Were target dates met — and if not, was it explained?</td><td>Missed deadlines without documented justification suggest the CAPA was not actively managed.</td></tr>
+        <tr><td>Was effectiveness verified, or just assumed?</td><td>"No further complaints" is not verification — they look for a defined check, method, and result.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:40px; font-size:1.2rem;">Common finding categories and where root cause usually hides</h3>
+    <table>
+      <thead><tr><th>Category</th><th>Typical examples</th><th>Likely root-cause area</th></tr></thead>
+      <tbody>
+        <tr><td>Documentation</td><td>Missing signatures, blank fields, illegible entries</td><td>Verification step missing; unclear SOP ownership</td></tr>
+        <tr><td>Training</td><td>Staff unaware of current SOP version</td><td>Retraining not triggered by SOP change</td></tr>
+        <tr><td>Change Control</td><td>Process or equipment changed informally</td><td>No change-management SOP, or it wasn't followed</td></tr>
+        <tr><td>Equipment / Calibration</td><td>Overdue calibration, missed PM</td><td>Inadequate PM schedule; no due-date alerting</td></tr>
+        <tr><td>Environmental Monitoring</td><td>Excursions not investigated or trended</td><td>No defined trigger levels; missing investigation SOP</td></tr>
+        <tr><td>Data Integrity</td><td>Audit trail gaps, unauthorised edits</td><td>Weak access controls; insufficient e-record review</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--ink-soft); font-size:.88rem; margin-top:14px;"><i>This table is a guide to where to look first, not a shortcut around the investigation — every finding still needs its own evidence-based RCA.</i></p>
+  </section>
+
+  <!-- WRITING -->
+  <section id="writing">
+    <div class="sec-head">
+      <span class="eyebrow">Module 3 · Writing &amp; Closing a CAPA</span>
+      <h2>The anatomy of a well-written CAPA</h2>
+      <p>A complete CAPA record answers six questions. If any one is missing or weak, it will not withstand regulatory scrutiny.</p>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>Question</th><th>What "complete" looks like</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>WHAT happened?</td><td>A precise, factual problem statement — no assumptions, no blame</td></tr>
+        <tr><td>2</td><td>WHY did it happen?</td><td>Documented, evidence-based RCA using a named methodology</td></tr>
+        <tr><td>3</td><td>WHAT will be done?</td><td>Specific corrective and preventive actions with named owners</td></tr>
+        <tr><td>4</td><td>WHO is responsible?</td><td>Named individuals — not departments or generic roles</td></tr>
+        <tr><td>5</td><td>BY WHEN?</td><td>Realistic, phased target dates aligned to the response deadline</td></tr>
+        <tr><td>6</td><td>HOW do we know it worked?</td><td>Pre-defined, measurable effectiveness criteria — not "no further complaints"</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:40px; font-size:1.2rem;">Writing the problem statement — the golden rule</h3>
+    <p style="color:var(--ink-soft); max-width:60ch;">Describe <b>what</b> happened — never why, and never what will be done about it. Record the finding verbatim, then add factual context: what, where, when, how many, how bad.</p>
+    <div class="ws-grid">
+      <div class="ws-row bad"><span class="mk">✗</span><div>"Product failed GMP requirement"<span class="note">Too vague — no what, where, when, or extent</span></div></div>
+      <div class="ws-row good"><span class="mk">✓</span><div>"Dual sign-off absent in BMR Section 4.3 for Batches X, Y, Z — Q3 2025, NPRA Major Finding"<span class="note">Specific, factual, taken directly from the finding</span></div></div>
+      <div class="ws-row bad"><span class="mk">✗</span><div>"Staff did not follow the SOP correctly"<span class="note">Already includes an assumption about cause</span></div></div>
+      <div class="ws-row good"><span class="mk">✓</span><div>"Section 4.3 sign-off field was blank in 3 of 30 Q3 2025 BMRs — confirmed by QA record review"<span class="note">Factual, scoped, evidence-based</span></div></div>
+    </div>
+  </section>
+
+  <!-- EVIDENCE -->
+  <section id="evidence">
+    <div class="sec-head">
+      <span class="eyebrow">Module 3</span>
+      <h2>Evidence standards</h2>
+      <p>Every completed action needs objective evidence. The core GMP rule: if it isn't documented, it didn't happen.</p>
+    </div>
+    <table>
+      <thead><tr><th>Action</th><th>Required evidence</th><th>Quality standard</th></tr></thead>
+      <tbody>
+        <tr><td>SOP revised</td><td>Approved SOP with version number, effective date, distribution record</td><td>Signed by a QA-authorised approver, issue notice attached</td></tr>
+        <tr><td>Personnel trained</td><td>Signed attendance register plus post-training assessment results</td><td>Name, date, SOP version — not just "training conducted"</td></tr>
+        <tr><td>Change control raised &amp; closed</td><td>Approved change control with reference number, formal closure certificate</td><td>All linked actions referenced and cross-checked</td></tr>
+        <tr><td>Process/equipment modified</td><td>Engineering change record, requalification or validation evidence</td><td>Before-and-after documented; IQ/OQ/PQ where required</td></tr>
+        <tr><td>BMR retrospective review</td><td>Completed checklist with batch list, findings log, QA sign-off</td><td>Must cover the full stated scope, not a representative sample</td></tr>
+        <tr><td>Regulator notified</td><td>Copy of submission letter with date; acknowledgement on file</td><td>Retain originals — don't rely on email as the formal record</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- CLOSURE CHECKLIST -->
+  <section id="closure">
+    <div class="sec-head">
+      <span class="eyebrow">Module 3</span>
+      <h2>CAPA closure checklist</h2>
+      <p>Before signing off closure, every item below must be satisfied. If any one is incomplete, the CAPA stays open.</p>
+    </div>
+    <div class="check-grid">
+      <div class="check-item"><div class="box"></div><div><span class="tag">Problem</span><p>Statement is factual, specific, and matches the audit finding verbatim</p></div></div>
+      <div class="check-item"><div class="box"></div><div><span class="tag">RCA</span><p>Root cause confirmed, documented and QA-approved — never "human error"</p></div></div>
+      <div class="check-item"><div class="box"></div><div><span class="tag">Actions</span><p>All planned actions completed with objective evidence attached</p></div></div>
+      <div class="check-item"><div class="box"></div><div><span class="tag">Traceability</span><p>Every action traces to the confirmed root cause — no orphan actions</p></div></div>
+      <div class="check-item"><div class="box"></div><div><span class="tag">Documents</span><p>All revised SOPs approved, version-controlled and formally distributed</p></div></div>
+      <div class="check-item"><div class="box"></div><div><span class="tag">Training</span><p>All affected staff trained on revised SOPs; records on file</p></div></div>
+      <div class="check-item"><div class="box"></div><div><span class="tag">Change control</span><p>Raised, actioned and formally closed</p></div></div>
+      <div class="check-item"><div class="box"></div><div><span class="tag">Evidence</span><p>Evidence package indexed and filed in the QMS — not personal drives or email</p></div></div>
+      <div class="check-item"><div class="box"></div><div><span class="tag">Effectiveness</span><p>Criteria met, evidenced, and signed off by QA</p></div></div>
+      <div class="check-item"><div class="box"></div><div><span class="tag">Notification</span><p>Regulatory authority or client notified of closure where required</p></div></div>
+    </div>
+  </section>
+
+  <!-- TAKEAWAYS -->
+  <section id="takeaways">
+    <div class="sec-head">
+      <span class="eyebrow">Conclusion</span>
+      <h2>Key takeaways</h2>
+    </div>
+    <div class="tk-grid">
+      <div class="tk-card"><div class="num">01</div><h4>CAPA is a commitment, not a form</h4><p>Every response is a written promise to the auditor. What you write will be verified — make it accurate and evidence-based.</p></div>
+      <div class="tk-card"><div class="num">02</div><h4>Root cause is systemic, not personal</h4><p>Regulators expect system failures to be named and fixed. "Human error" alone is never an acceptable root cause.</p></div>
+      <div class="tk-card"><div class="num">03</div><h4>Evidence is everything</h4><p>If it isn't documented, it didn't happen. Every completed action needs objective, retrievable evidence in the QMS.</p></div>
+      <div class="tk-card"><div class="num">04</div><h4>Effectiveness must be measured</h4><p>Define criteria before implementation, not after. A CAPA isn't closed until the root cause is demonstrably gone.</p></div>
+      <div class="tk-card"><div class="num">05</div><h4>Timeliness signals quality culture</h4><p>How quickly and thoroughly you respond tells the auditor as much as the content of the response itself.</p></div>
+    </div>
+
+    <h3 style="margin-top:44px; font-size:1.2rem;">Before you go: one commitment</h3>
+    <div class="commit-list">
+      <div class="commit"><div class="ttl">Next time I receive an audit finding, before writing the problem statement I will…</div><ul><li>Copy the auditor's exact wording first, before adding any interpretation</li><li>Confirm the scope before describing the problem</li><li>Check the severity classification and not downgrade it without QA approval</li></ul></div>
+      <div class="commit"><div class="ttl">Next time I run an RCA, I will make sure to…</div><ul><li>Keep asking "why" until I reach a system or process gap — not stop at "human error"</li><li>Involve someone from another department</li><li>Base every step on investigation evidence, not assumptions</li></ul></div>
+      <div class="commit"><div class="ttl">One thing I will stop doing in a CAPA response is…</div><ul><li>Writing "staff have been reminded/retrained" as the only corrective action</li><li>Defining effectiveness as "no further complaints" with no measurable criteria</li></ul></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>COMPILED AS AN INTERNAL TRAINING REFERENCE · SOURCE: CAPA MANAGEMENT BRIEFING + GMP AUDITOR COMMENTARY · NOT A CONTROLLED QUALITY DOCUMENT</p>
+  </div>
+</footer>
+
+</body>
+</html>
